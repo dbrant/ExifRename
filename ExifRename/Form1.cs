@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using ExifRename.Properties;
 
 /*
     Copyright (C) 2011-2013 Dmitry Brant <me@dmitrybrant.com>
@@ -42,17 +39,18 @@ namespace ExifRename
             Font old = c0.Font;
             c0.Font = new Font(SystemFonts.MessageBoxFont.FontFamily.Name, old.Size, old.Style);
             if (c0.Controls.Count > 0)
+            {
                 foreach (Control c in c0.Controls)
+                {
                     FixDialogFont(c);
+                }
+            }
         }
-
-
-
+        
         private void RenameDir(string directory, bool recurse)
         {
             try
             {
-
                 var files = Directory.GetFiles(directory, "*.*");
                 string pattern = txtPattern.Text;
                 string tempStr;
@@ -66,7 +64,9 @@ namespace ExifRename
                         Application.DoEvents();
 
                         if (!files[i].ToLower().Contains(".jp") && !files[i].ToLower().Contains(".mpo"))
+                        {
                             continue;
+                        }
 
                         string extension = Path.GetExtension(files[i]);
                         string newName = "";
@@ -76,16 +76,16 @@ namespace ExifRename
                             {
                                 if (p.Id == 0x9003)
                                 {
-                                    string[] poo = Encoding.ASCII.GetString(p.Value).Replace("\0", "").Split(splitChars);
-                                    if (poo.Length < 6) break;
+                                    string[] dateArray = Encoding.ASCII.GetString(p.Value).Replace("\0", "").Split(splitChars);
+                                    if (dateArray.Length < 6) break;
 
                                     tempStr = pattern;
-                                    tempStr = tempStr.Replace("[YYYY]", poo[0]);
-                                    tempStr = tempStr.Replace("[MM]", poo[1]);
-                                    tempStr = tempStr.Replace("[DD]", poo[2]);
-                                    tempStr = tempStr.Replace("[hh]", poo[3]);
-                                    tempStr = tempStr.Replace("[mm]", poo[4]);
-                                    tempStr = tempStr.Replace("[ss]", poo[5]);
+                                    tempStr = tempStr.Replace("[YYYY]", dateArray[0]);
+                                    tempStr = tempStr.Replace("[MM]", dateArray[1]);
+                                    tempStr = tempStr.Replace("[DD]", dateArray[2]);
+                                    tempStr = tempStr.Replace("[hh]", dateArray[3]);
+                                    tempStr = tempStr.Replace("[mm]", dateArray[4]);
+                                    tempStr = tempStr.Replace("[ss]", dateArray[5]);
 
                                     newName = Path.GetDirectoryName(files[i]);
                                     newName += "\\" + tempStr;
@@ -101,8 +101,13 @@ namespace ExifRename
                                 for (int k = 1; k < 10; k++)
                                 {
                                     if (File.Exists(newName + extension))
+                                    {
                                         newName += "_";
-                                    else break;
+                                    }
+                                    else
+                                    {
+                                        break;
+                                    }
                                 }
                                 newName += extension;
                                 File.Move(files[i], newName);
@@ -131,15 +136,13 @@ namespace ExifRename
                 MessageBox.Show(this, ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
-
-
+        
         private void button1_Click(object sender, EventArgs e)
         {
             btnDo.Enabled = false;
             RenameDir(txtPhotoDir.Text, chkRecurse.Checked);
             btnDo.Enabled = true;
-
-            lblStatus.Text = "Ready...";
+            lblStatus.Text = Resources.readyStr;
         }
 
         private void txtPhotoDir_DragEnter(object sender, DragEventArgs e)
@@ -158,16 +161,15 @@ namespace ExifRename
         private void btnBrowse_Click(object sender, EventArgs e)
         {
             var dlg = new FolderBrowserDialog();
-            dlg.Description = "Select folder with photos to be renamed:";
+            dlg.Description = Resources.selectFolder;
             if (dlg.ShowDialog(this) != DialogResult.OK) return;
             txtPhotoDir.Text = dlg.SelectedPath;
         }
 
         private void lnkAbout_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            MessageBox.Show(this, "ExifRename - a simple photo renaming tool that uses EXIF timestamps.\n\nA Dmitry Brant joint.\nhttp://dmitrybrant.com", "About...", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(this, Resources.aboutText, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-
-
+        
     }
 }
