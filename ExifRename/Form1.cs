@@ -72,27 +72,40 @@ namespace ExifRename
                         string newName = "";
                         {
                             Image img = new Bitmap(files[i]);
+                            DateTime latestDate = new DateTime(0);
                             foreach (var p in img.PropertyItems)
                             {
-                                if (p.Id == 0x9003)
+                                if (p.Id == 0x9003 || p.Id == 306 || p.Id == 36867 || p.Id == 36868)
                                 {
                                     string[] dateArray = Encoding.ASCII.GetString(p.Value).Replace("\0", "").Split(splitChars);
                                     if (dateArray.Length < 6) break;
 
-                                    tempStr = pattern;
-                                    tempStr = tempStr.Replace("[YYYY]", dateArray[0]);
-                                    tempStr = tempStr.Replace("[MM]", dateArray[1]);
-                                    tempStr = tempStr.Replace("[DD]", dateArray[2]);
-                                    tempStr = tempStr.Replace("[hh]", dateArray[3]);
-                                    tempStr = tempStr.Replace("[mm]", dateArray[4]);
-                                    tempStr = tempStr.Replace("[ss]", dateArray[5]);
+                                    DateTime date = new DateTime(Convert.ToInt32(dateArray[0]), Convert.ToInt32(dateArray[1]),
+                                        Convert.ToInt32(dateArray[2]), Convert.ToInt32(dateArray[3]), Convert.ToInt32(dateArray[4]),
+                                        Convert.ToInt32(dateArray[5]));
 
-                                    newName = Path.GetDirectoryName(files[i]);
-                                    newName += "\\" + tempStr;
-                                    break;
+                                    if (date.CompareTo(latestDate) > 0)
+                                    {
+                                        latestDate = date;
+                                        tempStr = pattern;
+                                        tempStr = tempStr.Replace("[YYYY]", dateArray[0]);
+                                        tempStr = tempStr.Replace("[MM]", dateArray[1]);
+                                        tempStr = tempStr.Replace("[DD]", dateArray[2]);
+                                        tempStr = tempStr.Replace("[hh]", dateArray[3]);
+                                        tempStr = tempStr.Replace("[mm]", dateArray[4]);
+                                        tempStr = tempStr.Replace("[ss]", dateArray[5]);
+
+                                        newName = Path.GetDirectoryName(files[i]);
+                                        newName += "\\" + tempStr;
+                                    }
                                 }
                             }
                             img.Dispose();
+
+                            if (latestDate.Ticks > 0)
+                            {
+
+                            }
                         }
                         if (newName != "")
                         {
