@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Defiant Technologies, LLC")]
 [assembly: AssemblyProduct("ExifRename")]
-[assembly: AssemblyCopyright("Copyright © Defiant Technologies 2011")]
+[assembly: AssemblyCopyright("Copyright © Defiant Technologies 2011-2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
