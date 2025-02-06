@@ -119,7 +119,7 @@
   </resheader>
   <data name="aboutText" xml:space="preserve">
     <value>A simple photo renaming tool that uses EXIF timestamps.
-http://dmitrybrant.com</value>
+https://dmitrybrant.com</value>
   </data>
   <data name="readyStr" xml:space="preserve">
     <value>Ready...</value>
